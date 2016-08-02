@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import "LXTopPicCell.h"
 
-
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource, LXTopPicCellDelegate>
 {
     NSMutableArray *adImgArr;
@@ -24,17 +23,32 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    adImgArr = [[NSMutableArray alloc] init];
-    for (int i = 0; i < 5; i++) {
-        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"%d.jpg", i]];
-        [adImgArr addObject:image];
-    }
+    adImgArr = [NSMutableArray arrayWithObjects:
+                @"http://f.hiphotos.baidu.com/baike/pic/item/2f738bd4b31c8701bc5f7115277f9e2f0608ff5c.jpg",
+                @"http://g.hiphotos.baidu.com/baike/pic/item/8718367adab44aed280d8dcfb01c8701a18bfb5d.jpg",
+                @"http://f.hiphotos.baidu.com/baike/pic/item/f9198618367adab44f93286888d4b31c8701e45d.jpg",
+                @"http://d.hiphotos.baidu.com/baike/pic/item/9d82d158ccbf6c81db3d54f1be3eb13533fa40a4.jpg",
+                @"http://g.hiphotos.baidu.com/baike/pic/item/b21bb051f8198618081a16ac48ed2e738bd4e6bd.jpg",
+                @"http://c.hiphotos.baidu.com/baike/pic/item/5bafa40f4bfbfbed414d05547bf0f736afc31f80.jpg", nil];
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kMainScreenWidth, kMainScreenHeight) style:UITableViewStylePlain];
     self.tableView.bounces = YES;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:_tableView];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    self.navigationController.navigationBarHidden = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    //在这儿可以设置关闭定时器
+    self.navigationController.navigationBarHidden = NO;
+    [super viewWillDisappear:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -54,11 +68,11 @@
         } else {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifer];
         }
-        
     }
     
     //    配置cell
     if (indexPath.section == 0) {
+        //若广告轮播图的资源不会改变的话，TableView滚动时可以不用刷新，下面这句代码移动到上面实例化LXTopPicCell的地方就可以
         [(LXTopPicCell *)cell configurationCell:adImgArr];
     } else {
         cell.textLabel.text = [NSString stringWithFormat:@"%ld  row", (long)indexPath.row];
@@ -96,7 +110,7 @@
 
 - (void)adDelegate:(NSInteger)index
 {
-    NSLog(@"%ld", (long)index);
+    NSLog(@"点击了第 %ld 个广告图", (long)index);
 }
 
 - (void)didReceiveMemoryWarning {

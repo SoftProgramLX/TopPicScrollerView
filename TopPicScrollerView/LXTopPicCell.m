@@ -7,6 +7,7 @@
 //
 
 #import "LXTopPicCell.h"
+#import "UIImageView+WebCache.h"
 
 @interface LXTopPicCell ()
 {
@@ -21,6 +22,8 @@
     NSInteger adNumber;
     
     NSTimer *_timer;
+    
+    BOOL haveImg;
 }
 
 @end
@@ -50,6 +53,11 @@
         _pageControll.pageIndicatorTintColor = [UIColor grayColor];
         [self addSubview:_pageControll];
         
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kMainScreenWidth, ScrollerHeight)];
+        imageView.userInteractionEnabled = YES;
+        [_scrollView addSubview:imageView];
+        [imageArr addObject:imageView];
+        
         _timer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(displayTime)userInfo:nil repeats:YES];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture:)];
@@ -58,51 +66,56 @@
     return self;
 }
 
-- (void)tapGesture:(UITapGestureRecognizer*)sender
-{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(adDelegate:)])
-    {
-        [self.delegate adDelegate:_scrollView.contentOffset.x/kMainScreenWidth - 1];
-    }
-}
-
 - (void)configurationCell:(NSArray *)arr
 {
-    adNumber = arr.count + 2;
-    
-    if (adNumber > imageArr.count) {
-        for (NSInteger i = imageArr.count; i < adNumber; i++) {
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0+kMainScreenWidth*i, 0, kMainScreenWidth, ScrollerHeight)];
-            imageView.userInteractionEnabled = YES;
-            [_scrollView addSubview:imageView];
-            [imageArr addObject:imageView];
-            
-            if (!arr.count) {
-                break;
-            }
-        }
-    }
-    
-    for (int i = 1; i < adNumber - 1 && arr.count; i++) {
-        UIImageView *imageView = imageArr[i];
-        imageView.image = arr[i-1];
-    }
-    
-    UIImageView *firtImageView = imageArr[0];
-    if (!arr.count) {
-        adNumber = 0;
-        firtImageView.image = [UIImage imageNamed:@"no_thumb.png"];
-    } else {
-        firtImageView.image = arr[arr.count-1];
+    haveImg = YES;
+    if (!(arr.count > 1)) {
+        adNumber = 1;
+        _scrollView.contentOffset = CGPointMake(0, 0);
+        UIImageView *firtImageView = imageArr[0];
         
-        UIImageView * lastImageView= imageArr[adNumber-1];
-        lastImageView.image = arr[0];
+        if (arr.count == 1) {
+            [self setImage:firtImageView withUrlString:arr[0]];
+        } else {
+            haveImg = NO;
+            firtImageView.image = [UIImage imageNamed:@"no_thumb"];
+        }
+        
+        [_timer invalidate];
+        
+    } else {
+        adNumber = arr.count + 2;
+        _scrollView.contentOffset = CGPointMake(kMainScreenWidth, 0);
+        
+        [self setImage:imageArr[0] withUrlString:arr[arr.count-1]];
+        
+        for (int i = 1; i < adNumber - 1 && arr.count; i++) {
+            UIImageView *imgView = [self createImgViewWithIndex:i];
+            [self setImage:imgView withUrlString:arr[i-1]];
+        }
+        
+        UIImageView *lastImgView = [self createImgViewWithIndex:adNumber-1];
+        [self setImage:lastImgView withUrlString:arr[0]];
     }
     
     _scrollView.contentSize = CGSizeMake(kMainScreenWidth*adNumber, ScrollerHeight);
-    _pageControll.numberOfPages = arr.count;
+    _pageControll.frame = CGRectMake(20, ScrollerHeight-21, kMainScreenWidth - 40, 12);
+    _pageControll.numberOfPages = adNumber>2 ? adNumber-2 : 1;
+    _pageControll.currentPage = 0;
 }
 
+#pragma mark - Enent response
+
+- (void)tapGesture:(UITapGestureRecognizer*)sender
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(adDelegate:)]) {
+        NSInteger indedx = _scrollView.contentOffset.x/kMainScreenWidth - 1;
+        if (indedx < 0 && haveImg) {
+            indedx = 0;
+        }
+        [self.delegate adDelegate:indedx];
+    }
+}
 
 - (void)displayTime
 {
@@ -114,7 +127,6 @@
     _scrollView.contentOffset = point;
 }
 
-#pragma mark--UIPageControl 事件处理
 - (void)pageControllClicked:(UIPageControl*)pageControll
 {
     //获取当前pagecontroll的值
@@ -124,6 +136,7 @@
 }
 
 #pragma mark --UIScrollViewDelegate
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     //通过滚动的偏移量来判断目前页面所对应的小白点
@@ -141,19 +154,69 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     //滚动结束时开始定时器
-    _timer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(displayTime)userInfo:nil repeats:YES];
+    if (adNumber > 2) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(displayTime)userInfo:nil repeats:YES];
+    }
     
     //获取当前pagecontroll的值
     NSInteger page = _scrollView.contentOffset.x/kMainScreenWidth;
     if (page == imageArr.count-1) {
         _scrollView.contentOffset = CGPointMake(kMainScreenWidth, 0);
         page = 1;
-    }else if (page == 0){
+    } else if (page == 0){
         _scrollView.contentOffset = CGPointMake((imageArr.count-1) * kMainScreenWidth, 0);
         page = imageArr.count-2;
     }
     //根据pagecontroll的值来改变scrollview的滚动位置，以此切换到指定的页面
     [_scrollView setContentOffset:CGPointMake(kMainScreenWidth*page, 0)];
+}
+
+#pragma mark - Private methods
+
+- (UIImageView *)createImgViewWithIndex:(NSInteger)index
+{
+    UIImageView *imageView;
+    if (imageArr.count <= index) {
+        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0 + kMainScreenWidth * index, 0, kMainScreenWidth, ScrollerHeight)];
+        imageView.userInteractionEnabled = YES;
+        [_scrollView addSubview:imageView];
+        [imageArr addObject:imageView];
+    } else {
+        imageView = imageArr[index];
+    }
+    
+    return imageView;
+}
+
+- (void)setImage:(UIImageView *)imgV withUrlString:(NSString *)string
+{
+    NSURL *imageUrl = [NSURL URLWithString:string];
+    [imgV sd_setImageWithURL:imageUrl placeholderImage:[UIImage imageNamed:@"bitmap"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        imgV.image = [LXTopPicCell cutImage:image withBackView:imgV];
+    }];
+}
+
+//裁剪图片
++ (UIImage *)cutImage:(UIImage*)image withBackView:(UIView *)backView
+{
+    //压缩图片
+    CGSize newSize;
+    CGImageRef imageRef = nil;
+    
+    if ((image.size.width / image.size.height) < (backView.frame.size.width / backView.frame.size.height)) {
+        newSize.width = image.size.width;
+        newSize.height = image.size.width * backView.frame.size.height / backView.frame.size.width;
+        
+        imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, fabs(image.size.height - newSize.height) / 4, newSize.width, newSize.height));
+        
+    } else {
+        newSize.height = image.size.height;
+        newSize.width = image.size.height * backView.frame.size.width / backView.frame.size.height;
+        
+        imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(fabs(image.size.width - newSize.width) / 2, 0, newSize.width, newSize.height));
+    }
+    
+    return [UIImage imageWithCGImage:imageRef];
 }
 
 @end
