@@ -32,6 +32,8 @@
 		5CF893CF1D504568009658E2 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF893BD1D504568009658E2 /* UIImageView+HighlightedWebCache.m */; };
 		5CF893D01D504568009658E2 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF893BF1D504568009658E2 /* UIImageView+WebCache.m */; };
 		5CF893D11D504568009658E2 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF893C11D504568009658E2 /* UIView+WebCacheOperation.m */; };
+		5CF9D6951DB11B6C00DAFC0B /* LXBannerScrollerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF9D6921DB11B6C00DAFC0B /* LXBannerScrollerView.m */; };
+		5CF9D6961DB11B6C00DAFC0B /* UIView+LXExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF9D6941DB11B6C00DAFC0B /* UIView+LXExtension.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,10 @@
 		5CF893BF1D504568009658E2 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		5CF893C01D504568009658E2 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		5CF893C11D504568009658E2 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		5CF9D6911DB11B6C00DAFC0B /* LXBannerScrollerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LXBannerScrollerView.h; sourceTree = "<group>"; };
+		5CF9D6921DB11B6C00DAFC0B /* LXBannerScrollerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXBannerScrollerView.m; sourceTree = "<group>"; };
+		5CF9D6931DB11B6C00DAFC0B /* UIView+LXExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+LXExtension.h"; sourceTree = "<group>"; };
+		5CF9D6941DB11B6C00DAFC0B /* UIView+LXExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+LXExtension.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +142,8 @@
 		18F6C5671ACA4F01005C9237 /* TopPicScrollerView */ = {
 			isa = PBXGroup;
 			children = (
+				5CF9D6931DB11B6C00DAFC0B /* UIView+LXExtension.h */,
+				5CF9D6941DB11B6C00DAFC0B /* UIView+LXExtension.m */,
 				5CF893A01D504568009658E2 /* SDWebImage */,
 				18F6C56C1ACA4F01005C9237 /* AppDelegate.h */,
 				18F6C56D1ACA4F01005C9237 /* AppDelegate.m */,
@@ -143,6 +151,8 @@
 				18F6C5731ACA4F01005C9237 /* ViewController.m */,
 				18F6C59B1ACA4F6D005C9237 /* LXTopPicCell.h */,
 				18F6C59C1ACA4F6D005C9237 /* LXTopPicCell.m */,
+				5CF9D6911DB11B6C00DAFC0B /* LXBannerScrollerView.h */,
+				5CF9D6921DB11B6C00DAFC0B /* LXBannerScrollerView.m */,
 				18F6C5681ACA4F01005C9237 /* Supporting Files */,
 			);
 			path = TopPicScrollerView;
@@ -320,11 +330,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CF9D6951DB11B6C00DAFC0B /* LXBannerScrollerView.m in Sources */,
 				18F6C5711ACA4F01005C9237 /* TopPicScrollerView.xcdatamodeld in Sources */,
 				5CF893CF1D504568009658E2 /* UIImageView+HighlightedWebCache.m in Sources */,
 				5CF893D01D504568009658E2 /* UIImageView+WebCache.m in Sources */,
 				5CF893CE1D504568009658E2 /* UIImage+WebP.m in Sources */,
 				5CF893CA1D504568009658E2 /* SDWebImagePrefetcher.m in Sources */,
+				5CF9D6961DB11B6C00DAFC0B /* UIView+LXExtension.m in Sources */,
 				18F6C56E1ACA4F01005C9237 /* AppDelegate.m in Sources */,
 				5CF893C61D504568009658E2 /* SDWebImageDecoder.m in Sources */,
 				5CF893C71D504568009658E2 /* SDWebImageDownloader.m in Sources */,

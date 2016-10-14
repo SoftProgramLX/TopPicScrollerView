@@ -7,18 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LXBannerScrollerView.h"
 
-@protocol LXTopPicCellDelegate <NSObject>
+#define kShopGroupBannerHeight (kMainScreenWidth * (221.0/368))
 
-- (void)adDelegate:(NSInteger)index;
+@interface LXTopPicCell : UITableViewCell
 
-@end
+@property (nonatomic, assign)id<LXBannerScrollerView> delegate;
 
-@interface LXTopPicCell : UITableViewCell<UIScrollViewDelegate>
-
-@property (nonatomic, assign)id<LXTopPicCellDelegate> delegate;
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andDeleagte:(id<LXTopPicCellDelegate>)delegate;
++ (instancetype)cellWithTableView:(UITableView *)tableView;
 
 - (void)configurationCell:(NSArray *)modelArr;
 

@@ -9,11 +9,12 @@
 #ifndef TopPicScrollerView_PrefixHeader_pch
 #define TopPicScrollerView_PrefixHeader_pch
 
+#import "UIView+LXExtension.h"
+
 // 屏幕宽与高
 #define kMainScreenWidth  ([UIScreen mainScreen].applicationFrame.size.width)
 #define kMainScreenHeight (([UIScreen mainScreen].applicationFrame.size.height)+20)
-#define kScrolHWRate (414.00/288)
-#define ScrollerHeight kMainScreenWidth/kScrolHWRate
+
 #define CBColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
 
 

@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "LXTopPicCell.h"
 
-@interface ViewController () <UITableViewDelegate, UITableViewDataSource, LXTopPicCellDelegate>
+@interface ViewController () <UITableViewDelegate, UITableViewDataSource, LXBannerScrollerView>
 {
     NSMutableArray *adImgArr;
 }
@@ -53,32 +53,20 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *cellIdentifer;
     if (indexPath.section == 0) {
-        cellIdentifer = @"LXTopPicCell";
+        LXTopPicCell *cell = [LXTopPicCell cellWithTableView:tableView];
+        cell.delegate = self;
+        [cell configurationCell:adImgArr];
+        return cell;
     } else {
-        cellIdentifer = @"LXTableViewCell";
-    }
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifer];
-    
-    if (!cell) {
-        if (indexPath.section == 0) {
-            cell = [[LXTopPicCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifer andDeleagte:self];
-        } else {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifer];
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LXTableViewCell"];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"LXTableViewCell"];
         }
-    }
-    
-    //    配置cell
-    if (indexPath.section == 0) {
-        //若广告轮播图的资源不会改变的话，TableView滚动时可以不用刷新，下面这句代码移动到上面实例化LXTopPicCell的地方就可以
-        [(LXTopPicCell *)cell configurationCell:adImgArr];
-    } else {
         cell.textLabel.text = [NSString stringWithFormat:@"%ld  row", (long)indexPath.row];
+        return cell;
     }
-    
-    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -103,12 +91,12 @@
 {
     if (indexPath.section == 0) {
         //根据屏幕的宽按比例自动计算滚动视图的高
-        return kMainScreenWidth/kScrolHWRate;
+        return kShopGroupBannerHeight;
     }
     return 50;
 }
 
-- (void)adDelegate:(NSInteger)index
+- (void)bannerDelegate:(NSInteger)index
 {
     NSLog(@"点击了第 %ld 个广告图", (long)index);
 }
